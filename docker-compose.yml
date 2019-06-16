@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  bookmarks:
+    build: './bookmarks'
+    environment:
+      PORT: 8080
+    ports:
+      - 80:8080

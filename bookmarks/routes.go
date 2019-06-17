@@ -1,6 +1,9 @@
 package main
 
-import "net/http"
+import (
+  "github.com/theipster/open-bookmarks/bookmarks/service"
+  "net/http"
+)
 
 // Define a route
 type Route struct {
@@ -16,12 +19,9 @@ type Routes []Route
 // Initialise routes
 var routes = Routes{
   Route {
-    "GetBookmark",  // Name
-    "GET",  // Method
-    "/bookmarks/{id}",  // Pattern
-    func (w http.ResponseWriter, r *http.Request) {
-      w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-      w.Write([]byte("{\"result\":\"OK\"}"))
-    },
+    "GetBookmark",
+    "GET",
+    "/bookmarks/{id}",
+    service.GetBookmark,
   },
 }

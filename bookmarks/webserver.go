@@ -6,6 +6,12 @@ import (
 )
 
 func StartWebServer(port string) {
+
+  // Attach router
+  r := NewRouter()
+  http.Handle("/", r);
+
+  // Start listening
   log.Println("Starting HTTP service at " + port)
   err := http.ListenAndServe(":" + port, nil)
 

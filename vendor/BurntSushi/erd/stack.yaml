@@ -1,0 +1,10 @@
+resolver: lts-13.19
+
+packages:
+- '.'
+
+extra-deps: [graphviz-2999.20.0.3]
+
+flags: {}
+
+extra-package-dbs: []

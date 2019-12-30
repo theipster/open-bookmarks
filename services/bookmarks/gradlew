@@ -1,0 +1,8 @@
+#!/bin/bash
+echo -n "Clearing build/ dir... "
+rm -rf build/
+echo "done."
+
+GRADLE_VERSION=${GRADLE_VERSION:-6.0.1-jdk8}
+echo "Running gradle:${GRADLE_VERSION} image... "
+docker run --rm -u gradle -v "$PWD":/home/gradle/project -w /home/gradle/project gradle:$GRADLE_VERSION gradle $@

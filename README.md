@@ -13,3 +13,4 @@ Saving bookmarks and accessing them across devices.
 - Tracing (Jaeger)
 - Configuration (etcd)
 - Messaging (Kafka)
+- Secrets management (Vault)

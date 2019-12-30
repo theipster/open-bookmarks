@@ -1,4 +1,4 @@
-package com.github.theipster.bookmarks;
+package com.github.theipster.openbookmarks.bookmarks;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

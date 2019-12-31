@@ -38,21 +38,19 @@ dependencies {
 	}
 }
 
-task cucumber() {
+task cucumber(type: JavaExec) {
 	description = 'Runs Cucumber tests'
 	group = 'verification'
 	dependsOn assemble, compileTestJava
 	shouldRunAfter test
-	doLast {
-		javaexec {
-			main = "io.cucumber.core.cli.Main"
-			classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-			args = ['--plugin', 'pretty', '--glue', 'gradle.cucumber', 'src/test/resources']
-		}
-	}
+	main = 'io.cucumber.core.cli.Main'
+	classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+	args = ['--plugin', 'pretty', '--glue', 'gradle.cucumber', 'src/test/resources']
 }
 
-check.dependsOn cucumber
+check {
+	dependsOn cucumber
+}
 
 test {
 	useJUnitPlatform()

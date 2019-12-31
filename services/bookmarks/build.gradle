@@ -12,6 +12,14 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	cucumberRuntime {
+		extendsFrom testImplementation
+		defaultDependencies {
+			dependencies ->
+				dependencies.add(project.dependencies.create('io.cucumber:cucumber-java:4.7.4'))
+				dependencies.add(project.dependencies.create('io.cucumber:cucumber-junit:4.7.4'))
+		}
+	}
 }
 
 repositories {
@@ -29,6 +37,22 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 }
+
+task cucumber() {
+	description = 'Runs Cucumber tests'
+	group = 'verification'
+	dependsOn assemble, compileTestJava
+	shouldRunAfter test
+	doLast {
+		javaexec {
+			main = "io.cucumber.core.cli.Main"
+			classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+			args = ['--plugin', 'pretty', '--glue', 'gradle.cucumber', 'src/test/resources']
+		}
+	}
+}
+
+check.dependsOn cucumber
 
 test {
 	useJUnitPlatform()

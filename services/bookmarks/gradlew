@@ -1,4 +1,4 @@
 #!/bin/bash
 GRADLE_USER_HOME=${GRADLE_USER_HOME:-~/.gradle}
 GRADLE_VERSION=${GRADLE_VERSION:-6.0.1-jdk8}
-docker run --rm -u gradle -v "$GRADLE_USER_HOME":/home/gradle/.gradle -v "$PWD":/home/gradle/project -w /home/gradle/project gradle:$GRADLE_VERSION gradle $@
+docker run --rm -u gradle -v "$GRADLE_USER_HOME":/home/gradle/.gradle --tmpfs /home/gradle/.gradle/daemon -v "$PWD":/home/gradle/project -w /home/gradle/project gradle:$GRADLE_VERSION gradle $@

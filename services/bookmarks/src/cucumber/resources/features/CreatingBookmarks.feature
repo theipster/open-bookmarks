@@ -1,0 +1,42 @@
+Feature: Creating bookmarks
+  As an internet user
+  I want to create bookmarks to URLs
+  So that I can refer back to the URLs in future
+
+  Background: Accessing the bookmarks service
+    Given I can access the bookmarks service
+
+  Scenario Outline: Creating a new bookmark
+    Given there is no existing bookmark of URL <url> and title <title>
+    When I attempt to create a bookmark of URL <url> and title <title>
+    Then I am told the bookmark was successfully created
+    And I am given a link to the bookmark
+
+    Examples:
+      |                url                 |       title       |
+      |     'https://www.google.com/'      | 'Google homepage' |
+      |       'https://github.com/'        | 'Github homepage' |
+      | 'https://github.com/fluidicon.png' | 'Github PNG logo' |
+      |      'https://www.bbc.co.uk/'      |        ''         |
+
+  Scenario Outline: Creating an existing bookmark
+    Given there is an existing bookmark of URL <url> and title <title>
+    When I attempt to create a bookmark of URL <url> and title <title>
+    Then I am told the bookmark exists
+    And I am given a link to the bookmark
+
+    Examples:
+      |                url                 |       title       |
+      |     'https://www.google.com/'      | 'Google homepage' |
+      |       'https://github.com/'        | 'Github homepage' |
+      | 'https://github.com/fluidicon.png' | 'Github PNG logo' |
+      |      'https://www.bbc.co.uk/'      |        ''         |
+
+  Scenario Outline: Creating an invalid bookmark
+    When I attempt to create a bookmark of URL <url> and title <title>
+    Then I am told the bookmark details are invalid
+
+    Examples:
+      |     url     |       title       |
+      |     ''      | 'Google homepage' |
+      | 'not a url' | 'Github homepage' |

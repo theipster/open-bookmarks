@@ -8,17 +8,16 @@ group = 'com.github.theipster.openbookmarks'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+sourceSets {
+	cucumber
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
-	cucumberRuntime {
-		extendsFrom testImplementation
-		defaultDependencies {
-			dependencies ->
-				dependencies.add(project.dependencies.create('io.cucumber:cucumber-java:4.7.4'))
-				dependencies.add(project.dependencies.create('io.cucumber:cucumber-junit:4.7.4'))
-		}
+	cucumberRuntimeClasspath {
+		extendsFrom cucumberImplementation
 	}
 }
 
@@ -36,16 +35,16 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	cucumberImplementation 'io.cucumber:cucumber-core:4.7.4'
+	cucumberImplementation 'io.cucumber:cucumber-java:4.7.4'
 }
 
 task cucumber(type: JavaExec) {
 	description = 'Runs Cucumber tests'
 	group = 'verification'
-	dependsOn assemble, compileTestJava
-	shouldRunAfter test
 	main = 'io.cucumber.core.cli.Main'
-	classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-	args = ['--plugin', 'pretty', '--glue', 'gradle.cucumber', 'src/test/resources']
+	classpath = configurations.cucumberRuntimeClasspath + sourceSets.cucumber.output
+	args = ['--strict', '--plugin', 'pretty', '--glue', 'com.github.theipster.openbookmarks.bookmarks', 'src/cucumber/resources']
 }
 
 check {

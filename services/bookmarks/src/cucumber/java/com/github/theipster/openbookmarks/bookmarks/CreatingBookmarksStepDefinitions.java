@@ -4,6 +4,8 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import cucumber.api.PendingException;	// io.cucumber:cucumber-java:4.*
+import java.net.URL;
+import java.util.Optional;
 
 public class CreatingBookmarksStepDefinitions {
 
@@ -12,13 +14,13 @@ public class CreatingBookmarksStepDefinitions {
 	throw new PendingException();
     }
 
-    @Given("there is no existing bookmark of URL {string} and title {string}")
-    public void there_is_no_existing_bookmark_of_URL_url_and_title_title(String url, String title) throws Throwable {
+    @Given("there is no existing bookmark of URL {url} and title {string}")
+    public void there_is_no_existing_bookmark_of_URL_url_and_title_title(Optional<URL> url, String title) throws Throwable {
 	throw new PendingException();
     }
 
-    @When("I attempt to create a bookmark of URL {string} and title {string}")
-    public void i_attempt_to_create_a_bookmark_of_URL_url_and_title_title(String url, String title) throws Throwable {
+    @When("I attempt to create a bookmark of URL {url} and title {string}")
+    public void i_attempt_to_create_a_bookmark_of_URL_url_and_title_title(Optional<URL> url, String title) throws Throwable {
 	throw new PendingException();
     }
 
@@ -32,8 +34,8 @@ public class CreatingBookmarksStepDefinitions {
 	throw new PendingException();
     }
 
-    @Given("there is an existing bookmark of URL {string} and title {string}")
-    public void there_is_an_existing_bookmark_of_URL_url_and_title_title(String url, String title) throws Throwable {
+    @Given("there is an existing bookmark of URL {url} and title {string}")
+    public void there_is_an_existing_bookmark_of_URL_url_and_title_title(Optional<URL> url, String title) throws Throwable {
 	throw new PendingException();
     }
 

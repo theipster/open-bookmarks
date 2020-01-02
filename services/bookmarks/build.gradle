@@ -1,5 +1,4 @@
 plugins {
-	id 'org.springframework.boot' version '2.2.2.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
 }
@@ -37,6 +36,8 @@ dependencies {
 	}
 	cucumberImplementation 'io.cucumber:cucumber-core:4.7.4'
 	cucumberImplementation 'io.cucumber:cucumber-java:4.7.4'
+	cucumberImplementation 'io.cucumber:cucumber-junit:4.7.4'
+	cucumberImplementation 'io.rest-assured:rest-assured:4.1.2'
 }
 
 task cucumber(type: JavaExec) {

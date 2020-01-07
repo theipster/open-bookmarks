@@ -13,9 +13,11 @@ if [ -z $cid ]; then
 		--name $GRADLE_CONTAINER \
 		--rm \
 		--tmpfs /home/gradle/.gradle/daemon \
-		--user gradle \
+		--user gradle:100 \
 		--volume "$GRADLE_USER_HOME":/home/gradle/.gradle \
 		--volume "$PWD":/home/gradle/project \
+		--volume /usr/local/bin/docker:/usr/bin/docker \
+		--volume /var/run/docker.sock:/var/run/docker.sock \
 		--workdir /home/gradle/project \
 		gradle:$GRADLE_VERSION \
 		tail -f /dev/null

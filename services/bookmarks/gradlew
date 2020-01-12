@@ -25,5 +25,9 @@ else
 	echo "Re-using $GRADLE_CONTAINER container $cid..."
 fi
 
+# Hack in the project version
+gitDescribe=`git describe --always --first-parent`
+gitDirty=`git diff HEAD | xargs -r -d'\n' bash -c 'echo "$@" | sha1sum | cut -c -7 | cat <(echo -n '.dirty-') -'`
+
 # Run gradle command
-docker exec $GRADLE_CONTAINER gradle $@
+docker exec $GRADLE_CONTAINER gradle $@ -Pversion="$gitDescribe$gitDirty"

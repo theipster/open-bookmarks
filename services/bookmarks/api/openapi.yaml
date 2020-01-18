@@ -20,14 +20,6 @@ paths:
               $ref: '#/components/schemas/Bookmark'
         required: true
       responses:
-        201:
-          description: Created
-          headers:
-            Location:
-              description: URI of the created bookmark
-              schema:
-                type: string
-                format: url
         303:
           description: See other
           headers:

@@ -9,7 +9,7 @@ Feature: Creating bookmarks
   Scenario Outline: Creating a new bookmark
     Given there is no existing bookmark of URL <url> and title <title>
     When I attempt to create a bookmark of URL <url> and title <title>
-    Then I am told the bookmark was successfully created
+    Then I am told the bookmark exists
     And I am given a link to the bookmark
 
     Examples:

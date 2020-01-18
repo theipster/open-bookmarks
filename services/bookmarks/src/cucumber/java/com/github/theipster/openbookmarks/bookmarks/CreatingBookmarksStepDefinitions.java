@@ -41,11 +41,6 @@ public class CreatingBookmarksStepDefinitions {
         httpResponse = httpClient.post(serviceHost + "/bookmarks", bodyContent);
     }
 
-    @Then("I am told the bookmark was successfully created")
-    public void i_am_told_the_bookmark_was_successfully_created() throws Throwable {
-        assertEquals(201, httpResponse.getStatusLine().getStatusCode());
-    }
-
     @Then("I am given a link to the bookmark")
     public void i_am_given_a_link_to_the_bookmark() throws Throwable {
         assertTrue(httpResponse.containsHeader("Location"));

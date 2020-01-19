@@ -17,15 +17,16 @@ public class HttpClient {
         this.httpClient = httpClient;
     }
 
-    public HttpResponse post(String url, String bodyContent) throws IOException, UnsupportedEncodingException {
+    public HttpResponse postJson(String url, String bodyContent) throws IOException, UnsupportedEncodingException {
         HttpPost post = new HttpPost(url);
+        post.setHeader("Content-Type", "application/json");
         post.setEntity(new StringEntity(bodyContent));
         return httpClient.execute(post);
     }
 
     static class Factory {
         static HttpClient getDefaultInstance() {
-            return new HttpClient(HttpClients.createDefault());
+            return new HttpClient(HttpClients.custom().disableRedirectHandling().build());
         }
     }
 }

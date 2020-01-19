@@ -41,6 +41,7 @@ dependencies {
 	cucumberImplementation 'io.cucumber:cucumber-java:4.7.4'
 	cucumberImplementation 'io.cucumber:cucumber-junit:4.7.4'
 	cucumberImplementation 'org.apache.httpcomponents:httpclient'
+	cucumberImplementation 'org.testcontainers:testcontainers:1.12.3'
 }
 
 docker {
@@ -53,9 +54,11 @@ docker {
 task cucumber(type: JavaExec) {
 	description = 'Runs Cucumber tests'
 	group = 'verification'
+	dependsOn dockerTag
 	main = 'io.cucumber.core.cli.Main'
 	classpath = configurations.cucumberRuntimeClasspath + sourceSets.cucumber.output
 	args = ['--strict', '--plugin', 'pretty', '--glue', 'com.github.theipster.openbookmarks.bookmarks', 'src/cucumber/resources']
+	environment BUILD_VERSION: "${version}"
 }
 
 check {

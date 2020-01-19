@@ -17,6 +17,7 @@ if [ -z $cid ]; then
 		--volume "$GRADLE_USER_HOME":/home/gradle/.gradle \
 		--volume "$PWD":/home/gradle/project \
 		--volume /usr/local/bin/docker:/usr/bin/docker \
+		--volume /usr/local/bin/docker-compose:/usr/bin/docker-compose \
 		--volume /var/run/docker.sock:/var/run/docker.sock \
 		--workdir /home/gradle/project \
 		gradle:$GRADLE_VERSION \

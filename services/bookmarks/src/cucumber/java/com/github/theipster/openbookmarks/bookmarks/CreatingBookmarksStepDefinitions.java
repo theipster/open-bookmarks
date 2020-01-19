@@ -4,7 +4,12 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import java.io.File;
+import java.net.URL;
+import java.net.MalformedURLException;
 import org.apache.http.HttpResponse;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -13,9 +18,24 @@ public class CreatingBookmarksStepDefinitions {
 
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}";
 
-    private String serviceHost;
+    private static DockerComposeContainer environment = getEnvironment();
+    private URL serviceHost;
     private HttpClient httpClient;
     private HttpResponse httpResponse;
+
+    private static DockerComposeContainer getEnvironment() {
+        DockerComposeContainer env = new DockerComposeContainer(new File("docker-compose.yml"))
+            .withExposedService("app", 8080, Wait.forListeningPort())
+            .withLocalCompose(true);
+        env.start();
+        return env;
+    }
+
+    private URL getHost() throws MalformedURLException {
+        String internalHost = environment.getServiceHost("app", 8080);
+        int internalPort = environment.getServicePort("app", 8080);
+        return new URL(String.format("http://%s:%d", internalHost, internalPort));
+    }
 
     @Before
     public void setUp() {
@@ -26,7 +46,7 @@ public class CreatingBookmarksStepDefinitions {
 
     @Given("I can access the bookmarks service")
     public void i_can_access_the_bookmarks_service() throws Throwable {
-        serviceHost = "http://bookmarks-service:80";   // @todo Load real service
+        serviceHost = getHost();
     }
 
     @Given("there is no existing bookmark of URL {string} and title {string}")
@@ -38,7 +58,7 @@ public class CreatingBookmarksStepDefinitions {
     @When("I attempt to create a bookmark of URL {string} and title {string}")
     public void i_attempt_to_create_a_bookmark_of_URL_url_and_title_title(String url, String title) throws Throwable {
         String bodyContent = String.format("{\"url\": \"%s\", \"title\": \"%s\"}", url, title);
-        httpResponse = httpClient.post(serviceHost + "/bookmarks", bodyContent);
+        httpResponse = httpClient.postJson(serviceHost.toString() + "/bookmarks", bodyContent);
     }
 
     @Then("I am given a link to the bookmark")
@@ -54,7 +74,7 @@ public class CreatingBookmarksStepDefinitions {
     @Given("there is an existing bookmark of URL {string} and title {string}")
     public void there_is_an_existing_bookmark_of_URL_url_and_title_title(String url, String title) throws Throwable {
         String bodyContent = String.format("{\"url\": \"%s\", \"title\": \"%s\"}", url, title);
-        httpClient.post(serviceHost + "/bookmarks", bodyContent);
+        httpClient.postJson(serviceHost.toString() + "/bookmarks", bodyContent);
     }
 
     @Then("I am told the bookmark exists")
@@ -70,12 +90,12 @@ public class CreatingBookmarksStepDefinitions {
     @When("I attempt to create a bookmark of title {string}")
     public void i_attempt_to_create_a_bookmark_of_title_title(String title) throws Throwable {
         String bodyContent = String.format("{\"title\": \"%s\"}", title);
-        httpClient.post(serviceHost + "/bookmarks", bodyContent);
+        httpResponse = httpClient.postJson(serviceHost.toString() + "/bookmarks", bodyContent);
     }
 
     @When("I attempt to create a bookmark of URL {string}")
     public void i_attempt_to_create_a_bookmark_of_URL_url(String url) throws Throwable {
         String bodyContent = String.format("{\"url\": \"%s\"}", url);
-        httpResponse = httpClient.post(serviceHost + "/bookmarks", bodyContent);
+        httpResponse = httpClient.postJson(serviceHost.toString() + "/bookmarks", bodyContent);
     }
 }

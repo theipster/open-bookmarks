@@ -7,6 +7,12 @@ GRADLE_VERSION=${GRADLE_VERSION:-6.0.1-jdk8}
 cid=`docker container ls -aqf name=$GRADLE_CONTAINER`
 if [ -z $cid ]; then
 	echo -n "Starting $GRADLE_CONTAINER container... "
+
+	# System paths (docker-machine compatibility)
+	DOCKER_MACHINE_SSH=$([ -x "$(which docker-machine 2>/dev/null)" ] && echo "docker-machine ssh `docker-machine active` -- " || echo "")
+	DOCKER_BIN="$($DOCKER_MACHINE_SSH which docker)"
+	DOCKER_COMPOSE_BIN="$($DOCKER_MACHINE_SSH which docker-compose)"
+
 	docker run \
 		--detach \
 		--init \
@@ -16,8 +22,8 @@ if [ -z $cid ]; then
 		--user gradle:100 \
 		--volume "$GRADLE_USER_HOME":/home/gradle/.gradle \
 		--volume "$PWD":/home/gradle/project \
-		--volume /usr/local/bin/docker:/usr/bin/docker \
-		--volume /usr/local/bin/docker-compose:/usr/bin/docker-compose \
+		--volume "$DOCKER_BIN":/usr/bin/docker \
+		--volume "$DOCKER_COMPOSE_BIN":/usr/bin/docker-compose \
 		--volume /var/run/docker.sock:/var/run/docker.sock \
 		--workdir /home/gradle/project \
 		gradle:$GRADLE_VERSION \

@@ -44,13 +44,6 @@ paths:
       - Bookmarks
       summary: Find bookmark by UUID
       operationId: getBookmarkById
-      parameters:
-      - name: If-None-Match
-        in: header
-        description: Client-side ETag
-        schema:
-          type: string
-          format: uuid
       responses:
         200:
           description: Success
@@ -58,20 +51,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Bookmark'
-          headers:
-            ETag:
-              description: Server-side ETag
-              schema:
-                type: string
-                format: uuid
-        304:
-          description: Not modified
-          headers:
-            ETag:
-              description: Server-side ETag
-              schema:
-                type: string
-                format: uuid
         400:
           description: Bad request
         404:
@@ -81,30 +60,9 @@ paths:
       - Bookmarks
       summary: Verify bookmark by UUID
       operationId: verifyBookmark
-      parameters:
-      - name: If-None-Match
-        in: header
-        description: Client-side ETag
-        schema:
-          type: string
-          format: uuid
       responses:
         200:
           description: Success
-          headers:
-            ETag:
-              description: Server-side ETag
-              schema:
-                type: string
-                format: uuid
-        304:
-          description: Not modified
-          headers:
-            ETag:
-              description: Server-side ETag
-              schema:
-                type: string
-                format: uuid
         400:
           description: Bad request
         404:

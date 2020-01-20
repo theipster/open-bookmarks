@@ -1,0 +1,70 @@
+plugins {
+	id 'com.palantir.docker' version '0.22.1'
+	id 'org.springframework.boot' version '2.2.2.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'java'
+}
+
+group = 'com.github.theipster.openbookmarks'
+sourceCompatibility = '1.8'
+
+sourceSets {
+	cucumber
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	cucumberRuntimeClasspath {
+		extendsFrom cucumberImplementation
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'mysql:mysql-connector-java'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	cucumberImplementation 'commons-logging:commons-logging'
+	cucumberImplementation 'io.cucumber:cucumber-core:4.7.4'
+	cucumberImplementation 'io.cucumber:cucumber-java:4.7.4'
+	cucumberImplementation 'io.cucumber:cucumber-junit:4.7.4'
+	cucumberImplementation 'org.apache.httpcomponents:httpclient'
+	cucumberImplementation 'org.testcontainers:testcontainers:1.12.3'
+}
+
+docker {
+	dependsOn bootJar
+	name "${group}/${rootProject.name}:${version}"
+	files jar.archiveFile.get()
+	buildArgs([jar: jar.archiveFileName.get()])
+}
+
+task cucumber(type: JavaExec) {
+	description = 'Runs Cucumber tests'
+	group = 'verification'
+	dependsOn dockerTag
+	main = 'io.cucumber.core.cli.Main'
+	classpath = configurations.cucumberRuntimeClasspath + sourceSets.cucumber.output
+	args = ['--strict', '--plugin', 'pretty', '--glue', 'com.github.theipster.openbookmarks.bookmarks', 'src/cucumber/resources']
+	environment BUILD_VERSION: "${version}"
+}
+
+check {
+	dependsOn cucumber
+}
+
+test {
+	useJUnitPlatform()
+}

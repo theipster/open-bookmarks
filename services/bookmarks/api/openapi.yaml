@@ -1,0 +1,82 @@
+openapi: 3.0.1
+info:
+  title: Bookmarks
+  license:
+    name: MIT Licence
+    url: https://opensource.org/licenses/MIT
+  version: 0.0.1
+paths:
+  /bookmarks:
+    post:
+      tags:
+      - Bookmarks
+      summary: Add a bookmark
+      operationId: addBookmark
+      requestBody:
+        description: Bookmark details to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bookmark'
+        required: true
+      responses:
+        303:
+          description: See other
+          headers:
+            Location:
+              description: URI of the bookmark
+              schema:
+                type: string
+                format: url
+        400:
+          description: Bad request
+  /bookmarks/{uuid}:
+    parameters:
+    - name: uuid
+      in: path
+      description: Bookmark identifier
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      tags:
+      - Bookmarks
+      summary: Find bookmark by UUID
+      operationId: getBookmarkById
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookmark'
+        400:
+          description: Bad request
+        404:
+          description: Not found
+    head:
+      tags:
+      - Bookmarks
+      summary: Verify bookmark by UUID
+      operationId: verifyBookmark
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request
+        404:
+          description: Not found
+components:
+  schemas:
+    Bookmark:
+      type: object
+      properties:
+        url:
+          type: string
+          format: url
+        title:
+          type: string
+      required:
+      - url
+      - title

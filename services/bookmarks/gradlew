@@ -1,0 +1,72 @@
+#!/bin/bash
+GRADLE_CONTAINER=${GRADLE_CONTAINER:-gradled}
+GRADLE_USER_HOME=${GRADLE_USER_HOME:-~/.gradle}
+GRADLE_VERSION=${GRADLE_VERSION:-6.0.1-jdk8}
+
+docker_machine_ssh() {
+    [ -x "$(which docker-machine 2>/dev/null)" ] \
+        && echo "docker-machine ssh `docker-machine active` -- " \
+        || echo ""
+}
+
+git_describe() {
+    git describe --always --first-parent
+}
+
+git_dirty() {
+    git diff HEAD \
+        | xargs -r -d '\n' bash -c 'echo "$@" \
+            | sha1sum \
+            | cut -c -7 \
+            | cat <(echo -n '.dirty-') - '
+}
+
+gradle_cmd() {
+    docker exec $GRADLE_CONTAINER gradle "$@" -Pversion="$(git_describe)$(git_dirty)"
+}
+
+gradle_daemon() {
+    local docker_machine_ssh="$(docker_machine_ssh)"
+    local docker_bin="$($docker_machine_ssh which docker)"
+    local compose_bin="$($docker_machine_ssh which docker-compose)"
+
+    docker run \
+        --detach \
+        --init \
+        --name $GRADLE_CONTAINER \
+        --rm \
+        --tmpfs /home/gradle/.gradle/daemon \
+        --user gradle:100 \
+        --volume "$GRADLE_USER_HOME":/home/gradle/.gradle \
+        --volume "$PWD":/home/gradle/project \
+        --volume "$docker_bin":/usr/bin/docker \
+        --volume "$compose_bin":/usr/bin/docker-compose \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        --workdir /home/gradle/project \
+        gradle:$GRADLE_VERSION \
+        tail -f /dev/null
+}
+
+gradle_daemon_cid() {
+    docker container ls -aqf name=$GRADLE_CONTAINER
+}
+
+main() {
+    echo -n "Finding $GRADLE_CONTAINER container... "
+
+    # Start Gradle Daemon (if necessary)
+    local cid="$(gradle_daemon_cid)"
+    if [ -z $cid ]; then
+        echo "not found."
+        echo -n "Starting $GRADLE_CONTAINER container... "
+        gradle_daemon >/dev/null
+        gradle_daemon_cid
+    else
+        echo "found $cid."
+    fi
+
+    # Run Gradle command
+    gradle_cmd "$@"
+}
+
+main "$@"

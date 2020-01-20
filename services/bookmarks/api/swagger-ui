@@ -1,0 +1,13 @@
+#!/bin/bash
+APIDIR=$(dirname $(realpath "$0"))
+SERVICE=$(basename $(dirname $APIDIR))
+
+docker run \
+	--env SWAGGER_JSON=/app/openapi.yaml \
+	--interactive \
+	--name $SERVICE.swagger-ui \
+	--publish 80:8080 \
+	--rm \
+	--tty \
+	--volume $APIDIR/openapi.yaml:/app/openapi.yaml:ro \
+	swaggerapi/swagger-ui

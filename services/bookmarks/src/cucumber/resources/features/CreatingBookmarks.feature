@@ -9,7 +9,7 @@ Feature: Creating bookmarks
   Scenario Outline: Creating a new bookmark
     Given there is no existing bookmark of URL <url> and title <title>
     When I attempt to create a bookmark of URL <url> and title <title>
-    Then I am told the bookmark exists
+    Then I am told the bookmark exists elsewhere
     And I am given a link to the bookmark
 
     Examples:
@@ -21,7 +21,7 @@ Feature: Creating bookmarks
   Scenario Outline: Creating an existing bookmark
     Given there is an existing bookmark of URL <url> and title <title>
     When I attempt to create a bookmark of URL <url> and title <title>
-    Then I am told the bookmark exists
+    Then I am told the bookmark exists elsewhere
     And I am given a link to the bookmark
 
     Examples:
@@ -59,5 +59,5 @@ Feature: Creating bookmarks
   Scenario: Malicious attempt to overwrite existing bookmark's URL and title
     Given there is an existing bookmark of URL 'https://www.google.com/' and title 'Google'
     When I attempt to change the bookmark to URL 'https://www.bing.com/' and title 'Bing'
-    Then I am told the bookmark exists
+    Then I am told the bookmark exists elsewhere
     And I am given a link to the bookmark

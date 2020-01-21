@@ -41,6 +41,7 @@ dependencies {
 	cucumberImplementation 'io.cucumber:cucumber-java:4.7.4'
 	cucumberImplementation 'io.cucumber:cucumber-junit:4.7.4'
 	cucumberImplementation 'org.apache.httpcomponents:httpclient'
+	cucumberImplementation 'org.json:json:20190722'
 	cucumberImplementation 'org.testcontainers:testcontainers:1.12.3'
 }
 

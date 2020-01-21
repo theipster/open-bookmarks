@@ -13,13 +13,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.UUID;
 import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class CreatingBookmarksStepDefinitions {
+public class BookmarksStepDefinitions {
 
     private static final String BOOKMARK_URI_REGEX = "/bookmarks/([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})";
 
@@ -92,8 +94,8 @@ public class CreatingBookmarksStepDefinitions {
         httpResponse = httpClient.postJson(serviceHost.toString() + "/bookmarks", bodyContent);
     }
 
-    @Then("I am told the bookmark exists")
-    public void i_am_told_the_bookmark_exists() throws Throwable {
+    @Then("I am told the bookmark exists elsewhere")
+    public void i_am_told_the_bookmark_exists_elsewhere() throws Throwable {
         assertEquals(303, httpResponse.getStatusLine().getStatusCode());
     }
 
@@ -136,6 +138,57 @@ public class CreatingBookmarksStepDefinitions {
         UUID id = extractUUIDFromBookmarkURI(uri);
         String bodyContent = String.format("{\"id\": \"%s\", \"url\": \"%s\", \"title\": \"%s\"}", id.toString(), url, title);
         httpResponse = httpClient.postJson(serviceHost.toString() + "/bookmarks", bodyContent);
+    }
+
+    @When("I check the existence of the bookmark")
+    public void i_check_the_existence_of_the_bookmark() throws Throwable {
+        URI uri = extractLocationHeaderFromHttpResponse(httpResponse);
+        httpResponse = httpClient.head(serviceHost.toString() + uri.toString());
+    }
+
+    @Then("I am told the bookmark exists here")
+    public void i_am_told_the_bookmark_exists_here() throws Throwable {
+        assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+    }
+
+    @When("I attempt to retrieve the bookmark")
+    public void i_attempt_to_retrieve_the_bookmark() throws Throwable {
+        URI uri = extractLocationHeaderFromHttpResponse(httpResponse);
+        httpResponse = httpClient.get(serviceHost.toString() + uri.toString());
+    }
+
+    @Then("I am given the bookmark URL {string}")
+    public void i_am_given_the_bookmark_URL_url(String url) throws Throwable {
+        String requestBody = EntityUtils.toString(httpResponse.getEntity());
+        JSONObject json = new JSONObject(requestBody);
+        assertEquals(url, json.get("url"));
+    }
+
+    @Then("I am given the bookmark title {string}")
+    public void i_am_given_the_bookmark_title_title(String title) throws Throwable {
+        String requestBody = EntityUtils.toString(httpResponse.getEntity());
+        JSONObject json = new JSONObject(requestBody);
+        assertEquals(title, json.get("title"));
+    }
+
+    @Given("there is no existing bookmark with id {string}")
+    public void there_is_no_existing_bookmark_with_id_id(String id) throws Throwable {
+        // @todo Make this idempotent by deleting any existing bookmarks.
+    }
+
+    @When("I check the existence of the bookmark with id {string}")
+    public void i_check_the_existence_of_the_bookmark_with_id_id(String id) throws Throwable {
+        httpResponse = httpClient.head(serviceHost.toString() + "/bookmarks/" + id);
+    }
+
+    @Then("I am told the bookmark does not exist")
+    public void i_am_told_the_bookmark_does_not_exist() throws Throwable {
+        assertEquals(404, httpResponse.getStatusLine().getStatusCode());
+    }
+
+    @When("I attempt to retrieve the bookmark with id {string}")
+    public void i_attempt_to_retrieve_the_bookmark_with_id_id(String id) throws Throwable {
+        httpResponse = httpClient.get(serviceHost.toString() + "/bookmarks/" + id);
     }
 
     class LastResponseMissingLocationHeaderException extends RuntimeException {

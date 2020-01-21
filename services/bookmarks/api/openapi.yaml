@@ -51,8 +51,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Bookmark'
-        400:
-          description: Bad request
         404:
           description: Not found
     head:
@@ -63,8 +61,6 @@ paths:
       responses:
         200:
           description: Success
-        400:
-          description: Bad request
         404:
           description: Not found
 components:

@@ -24,8 +24,8 @@ public class GetBookmarkController {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException exception) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.notFound().build();
     }
 }

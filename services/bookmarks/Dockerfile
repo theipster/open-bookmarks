@@ -3,4 +3,4 @@ ARG jar
 EXPOSE 8080
 COPY $jar /app/app.jar
 WORKDIR /app
-ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "app.jar"]

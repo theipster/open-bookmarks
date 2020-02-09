@@ -5,6 +5,10 @@
 # If you need both WebDriver and PHPBrowser tests - create a separate suite.
 
 actor: AcceptanceTester
+gherkin:
+    contexts:
+        default:
+            - Step\Acceptance\CreatingUsersSteps
 modules:
     enabled:
         - PhpBrowser:

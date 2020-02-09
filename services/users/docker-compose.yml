@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  symfony:
+    image: php:7.4-fpm-alpine
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/var/www/html
+
+  nginx:
+    command: sh -c "envsubst < /tmp/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+    environment:
+      FASTCGI_PASS: symfony:9000
+      FASTCGI_SCRIPT: /var/www/html/public/index.php
+    image: nginx:1.17-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/tmp/default.conf.template:ro

@@ -10,4 +10,5 @@ $ php vendor/codeception/codeception/codecept bootstrap
 $ composer require codeception/module-asserts --dev
 $ composer require codeception/module-phpbrowser --dev
 $ composer require codeception/module-rest --dev
+$ composer require doctrine/orm doctrine/doctrine-bundle
 ```

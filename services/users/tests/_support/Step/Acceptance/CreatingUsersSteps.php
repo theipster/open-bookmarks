@@ -11,7 +11,7 @@ class CreatingUsersSteps extends \AcceptanceTester
      */
     public function thereIsNoExistingUserWithUsername(string $username)
     {
-        throw new \PHPUnit\Framework\IncompleteTestError("Step `there is no existing user with username :username` is not defined");
+        // @todo Make this idempotent by finding and deleting any existing users.
     }
 
     /**
@@ -19,7 +19,7 @@ class CreatingUsersSteps extends \AcceptanceTester
      */
     public function iAttemptToCreateAUserWithUsername(string $username)
     {
-        throw new \PHPUnit\Framework\IncompleteTestError("Step `I attempt to create a user with username :username` is not defined");
+        $this->sendPOST('/users', ['username' => $username]);
     }
 
     /**
@@ -27,7 +27,7 @@ class CreatingUsersSteps extends \AcceptanceTester
      */
     public function iAmToldTheUserHasBeenCreated()
     {
-        throw new \PHPUnit\Framework\IncompleteTestError("Step `I am told the user has been created` is not defined");
+        $this->seeResponseCodeIs(201);
     }
 
     /**
@@ -35,7 +35,10 @@ class CreatingUsersSteps extends \AcceptanceTester
      */
     public function iAmGivenALinkToTheUser()
     {
-        throw new \PHPUnit\Framework\IncompleteTestError("Step `I am given a link to the user` is not defined");
+        $this->seeHttpHeader('Location');
+
+        $location = $this->grabHttpHeader('Location');
+        $this->assertRegExp('/^\/users\/([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})$/', $location);
     }
 
     /**
@@ -43,7 +46,7 @@ class CreatingUsersSteps extends \AcceptanceTester
      */
     public function iCanAccessTheUsersService()
     {
-        throw new \PHPUnit\Framework\IncompleteTestError("Step `I can access the users service` is not defined");
+        // No-op.
     }
 
     /**
@@ -51,7 +54,7 @@ class CreatingUsersSteps extends \AcceptanceTester
      */
     public function iAttemptToCreateAUserWithoutAUsername()
     {
-        throw new \PHPUnit\Framework\IncompleteTestError("Step `I attempt to create a user without a username` is not defined");
+        $this->sendPOST('/users', []);
     }
 
     /**
@@ -59,7 +62,7 @@ class CreatingUsersSteps extends \AcceptanceTester
      */
     public function iAmToldTheUserDetailsAreInvalid()
     {
-        throw new \PHPUnit\Framework\IncompleteTestError("Step `I am told the user details are invalid` is not defined");
+        $this->seeResponseCodeIs(400);
     }
 
     /**
@@ -67,7 +70,7 @@ class CreatingUsersSteps extends \AcceptanceTester
      */
     public function thereIsAnExistingUserWithUsername(string $username)
     {
-        throw new \PHPUnit\Framework\IncompleteTestError("Step `there is an existing user with username :username` is not defined");
+        $this->sendPOST('/users', ['username' => $username]);
     }
 
     /**
@@ -75,6 +78,6 @@ class CreatingUsersSteps extends \AcceptanceTester
      */
     public function iAmToldTheUserCannotBeCreated()
     {
-        throw new \PHPUnit\Framework\IncompleteTestError("Step `I am told the user cannot be created` is not defined");
+        $this->seeResponseCodeIs(422);
     }
 }

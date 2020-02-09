@@ -7,4 +7,7 @@ $ composer create-project symfony/skeleton users
 $ composer require annotations
 $ composer require codeception/codeception --dev
 $ php vendor/codeception/codeception/codecept bootstrap
+$ composer require codeception/module-asserts --dev
+$ composer require codeception/module-phpbrowser --dev
+$ composer require codeception/module-rest --dev
 ```

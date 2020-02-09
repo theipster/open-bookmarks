@@ -11,7 +11,10 @@ gherkin:
             - Step\Acceptance\CreatingUsersSteps
 modules:
     enabled:
+        - Asserts
         - PhpBrowser:
             url: http://localhost
+        - REST:
+            depends: PhpBrowser
         - \Helper\Acceptance
     step_decorators: ~

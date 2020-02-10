@@ -11,4 +11,6 @@ $ composer require codeception/module-asserts --dev
 $ composer require codeception/module-phpbrowser --dev
 $ composer require codeception/module-rest --dev
 $ composer require doctrine/orm doctrine/doctrine-bundle
+$ composer require ramsey/uuid-doctrine
+$ composer require migrations --dev
 ```
